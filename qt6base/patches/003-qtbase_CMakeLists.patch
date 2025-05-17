@@ -1,5 +1,5 @@
---- a/build_dir/hostpkg/qtbase-6.4.3/CMakeLists.txt
-+++ b/build_dir/hostpkg/qtbase-6.4.3/CMakeLists.txt
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
 @@ -12,40 +12,6 @@ cmake_minimum_required(VERSION 3.16)
  include(.cmake.conf)
  
