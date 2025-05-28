@@ -7,12 +7,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=qt6base
-PKG_VERSION:=6.4.3
+PKG_VERSION:=6.8.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=qtbase-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/qt/qtbase/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=e156692029a5503bad5f681bda856dd9df9dec17baa0ca7ee36b10178503ed40
+PKG_HASH:=cea5c8f2c20d9cbd684f8a402721e63b87a2886e906f6ec7e0f7e1ff69c83206
 
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/qtbase-$(PKG_VERSION)
 PKG_BUILD_DIR:=$(BUILD_DIR)/qtbase-$(PKG_VERSION)
@@ -20,6 +20,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/qtbase-$(PKG_VERSION)
 PKG_BUILD_DEPENDS:=qt6base/host
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
+PKG_BUILD_FLAGS:=no-mips16
 CMAKE_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
@@ -27,6 +28,9 @@ include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/cmake.mk
 
 STRIP:=$(TARGET_CROSS)strip $(call qstrip,$(CONFIG_STRIP_ARGS))
+
+# 计算不含符号链接的真实路径
+REAL_HOST_BUILD_DIR:=$(shell realpath $(HOST_BUILD_DIR))
 
 define Package/libQt6/Default
   SECTION:=libs
@@ -55,86 +59,86 @@ endif
 CMAKE_SHARED_LDFLAGS := $(filter-out -Wl$(comma)-Bsymbolic-functions,$(CMAKE_SHARED_LDFLAGS))
 
 CMAKE_HOST_OPTIONS+= \
-	-DQT_FORCE_MIN_CMAKE_VERSION_FOR_BUILDING_QT=3.19 \
-	-DBUILD_SHARED_LIBS=OFF \
-	-DFEATURE_optimize_full=ON \
-	-DFEATURE_glib=OFF \
-	-DFEATURE_zstd=OFF \
-	-DFEATURE_concurrent=OFF \
-	-DFEATURE_dbus=ON \
-	-DFEATURE_gui=OFF \
-	-DFEATURE_network=ON \
-	-DFEATURE_openssl=OFF \
-	-DFEATURE_sql=OFF \
-	-DFEATURE_testlib=OFF \
-	-DFEATURE_xml=ON
+    -DQT_FORCE_MIN_CMAKE_VERSION_FOR_BUILDING_QT=3.19 \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DFEATURE_optimize_full=ON \
+    -DFEATURE_glib=OFF \
+    -DFEATURE_zstd=OFF \
+    -DFEATURE_concurrent=OFF \
+    -DFEATURE_dbus=ON \
+    -DFEATURE_gui=OFF \
+    -DFEATURE_network=ON \
+    -DFEATURE_openssl=OFF \
+    -DFEATURE_sql=OFF \
+    -DFEATURE_testlib=OFF \
+    -DFEATURE_xml=ON
 
 CMAKE_OPTIONS+= \
-	-DQT_FORCE_MIN_CMAKE_VERSION_FOR_BUILDING_QT=3.19 \
-	-DQT_FORCE_MIN_CMAKE_VERSION_FOR_USING_QT=3.19 \
-	-DBUILD_SHARED_LIBS=ON \
-	-DCMAKE_SYSROOT=$(STAGING_DIR) \
-	-DQT_HOST_PATH=$(STAGING_DIR_HOSTPKG) \
-	-DINSTALL_PLUGINSDIR=/usr/lib/qt6plugins \
-	-DQT_QMAKE_TARGET_MKSPEC=devices/linux-generic-g++ \
-	-DQT_QMAKE_DEVICE_OPTIONS=CROSS_COMPILE="$(TARGET_CROSS);COMPILER_FLAGS=$(TARGET_CFLAGS) $(EXTRA_CFLAGS) $(TARGET_CPPFLAGS) $(EXTRA_CPPFLAGS);LINKER_FLAGS=$(TARGET_LDFLAGS) $(EXTRA_LDFLAGS)" \
-	-DQT_BUILD_EXAMPLES=OFF \
-	-DQT_BUILD_TESTS=OFF \
-	-DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=OFF \
-	-DINPUT_opengl=no \
-	-DFEATURE_optimize_full=ON \
-	-DFEATURE_system_zlib=ON \
-	-DFEATURE_zstd=OFF \
-	-DFEATURE_backtrace=OFF \
-	-DFEATURE_system_doubleconversion=OFF \
-	-DFEATURE_glib=OFF \
-	-DFEATURE_icu=OFF \
-	-DFEATURE_mimetype_database=ON \
-	-DFEATURE_system_pcre2=ON \
-	-DFEATURE_concurrent=$(if $(CONFIG_PACKAGE_libQt6Concurrent),ON,OFF) \
-	-DFEATURE_dbus=$(if $(CONFIG_PACKAGE_libQt6DBus),ON,OFF) \
-	-DFEATURE_gui=$(if $(CONFIG_PACKAGE_libQt6Gui),ON,OFF) \
-	-DFEATURE_fontconfig=OFF \
-	-DFEATURE_system_freetype=ON \
-	-DFEATURE_accessibility=OFF \
-	-DFEATURE_harfbuzz=OFF \
-	-DFEATURE_gif=OFF \
-	-DFEATURE_ico=OFF \
-	-DFEATURE_jpeg=OFF \
-	-DFEATURE_png=OFF \
-	-DFEATURE_texthtmlparser=OFF \
-	-DFEATURE_cssparser=OFF \
-	-DFEATURE_textodfwriter=OFF \
-	-DFEATURE_textmarkdownreader=OFF \
-	-DFEATURE_textmarkdownwriter=OFF \
-	-DFEATURE_sessionmanager=OFF \
-	-DFEATURE_evdev=OFF \
-	-DFEATURE_vnc=OFF \
-	-DFEATURE_linuxfb=OFF \
-	-DFEATURE_network=$(if $(CONFIG_PACKAGE_libQt6Network),ON,OFF) \
-	-DFEATURE_openssl=ON \
-	-DFEATURE_openssl_runtime=ON \
-	-DFEATURE_ocsp=OFF \
-	-DFEATURE_printsupport=$(if $(CONFIG_PACKAGE_libQt6PrintSupport),ON,OFF) \
-	-DFEATURE_sql=$(if $(CONFIG_PACKAGE_libQt6Sql),ON,OFF) \
-	-DFEATURE_sqlmodel=OFF \
-	-DFEATURE_sql_sqlite=ON \
-	-DFEATURE_system_sqlite=OFF \
-	-DFEATURE_sql_db2=OFF \
-	-DFEATURE_sql_ibase=OFF \
-	-DFEATURE_sql_mysql=OFF \
-	-DFEATURE_sql_oci=OFF \
-	-DFEATURE_sql_odbc=OFF \
-	-DFEATURE_sql_psql=OFF \
-	-DFEATURE_testlib=$(if $(CONFIG_PACKAGE_libQt6Test),ON,OFF) \
-	-DFEATURE_itemmodeltester=OFF \
-	-DFEATURE_widgets=$(if $(CONFIG_PACKAGE_libQt6Widgets),ON,OFF) \
-	-DFEATURE_xml=$(if $(CONFIG_PACKAGE_libQt6Xml),ON,OFF) \
-	-DFEATURE_tuiotouch=$(if $(CONFIG_PACKAGE_qt6-plugin-libqtuiotouchplugin),ON,OFF)
+    -DQT_FORCE_MIN_CMAKE_VERSION_FOR_BUILDING_QT=3.19 \
+    -DQT_FORCE_MIN_CMAKE_VERSION_FOR_USING_QT=3.19 \
+    -DBUILD_SHARED_LIBS=ON \
+    -DCMAKE_SYSROOT=$(STAGING_DIR) \
+    -DQT_HOST_PATH=$(STAGING_DIR_HOSTPKG) \
+    -DINSTALL_PLUGINSDIR=/usr/lib/qt6plugins \
+    -DQT_QMAKE_TARGET_MKSPEC=devices/linux-generic-g++ \
+    -DQT_QMAKE_DEVICE_OPTIONS=CROSS_COMPILE="$(TARGET_CROSS);COMPILER_FLAGS=$(TARGET_CFLAGS) $(EXTRA_CFLAGS) $(TARGET_CPPFLAGS) $(EXTRA_CPPFLAGS);LINKER_FLAGS=$(TARGET_LDFLAGS) $(EXTRA_LDFLAGS)" \
+    -DQT_BUILD_EXAMPLES=OFF \
+    -DQT_BUILD_TESTS=OFF \
+    -DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=OFF \
+    -DINPUT_opengl=no \
+    -DFEATURE_optimize_full=ON \
+    -DFEATURE_system_zlib=ON \
+    -DFEATURE_zstd=OFF \
+    -DFEATURE_backtrace=OFF \
+    -DFEATURE_system_doubleconversion=OFF \
+    -DFEATURE_glib=OFF \
+    -DFEATURE_icu=OFF \
+    -DFEATURE_mimetype_database=ON \
+    -DFEATURE_system_pcre2=ON \
+    -DFEATURE_concurrent=$(if $(CONFIG_PACKAGE_libQt6Concurrent),ON,OFF) \
+    -DFEATURE_dbus=$(if $(CONFIG_PACKAGE_libQt6DBus),ON,OFF) \
+    -DFEATURE_gui=$(if $(CONFIG_PACKAGE_libQt6Gui),ON,OFF) \
+    -DFEATURE_fontconfig=OFF \
+    -DFEATURE_system_freetype=ON \
+    -DFEATURE_accessibility=OFF \
+    -DFEATURE_harfbuzz=OFF \
+    -DFEATURE_gif=OFF \
+    -DFEATURE_ico=OFF \
+    -DFEATURE_jpeg=OFF \
+    -DFEATURE_png=OFF \
+    -DFEATURE_texthtmlparser=OFF \
+    -DFEATURE_cssparser=OFF \
+    -DFEATURE_textodfwriter=OFF \
+    -DFEATURE_textmarkdownreader=OFF \
+    -DFEATURE_textmarkdownwriter=OFF \
+    -DFEATURE_sessionmanager=OFF \
+    -DFEATURE_evdev=OFF \
+    -DFEATURE_vnc=OFF \
+    -DFEATURE_linuxfb=OFF \
+    -DFEATURE_network=$(if $(CONFIG_PACKAGE_libQt6Network),ON,OFF) \
+    -DFEATURE_openssl=ON \
+    -DFEATURE_openssl_runtime=ON \
+    -DFEATURE_ocsp=OFF \
+    -DFEATURE_printsupport=$(if $(CONFIG_PACKAGE_libQt6PrintSupport),ON,OFF) \
+    -DFEATURE_sql=$(if $(CONFIG_PACKAGE_libQt6Sql),ON,OFF) \
+    -DFEATURE_sqlmodel=OFF \
+    -DFEATURE_sql_sqlite=ON \
+    -DFEATURE_system_sqlite=OFF \
+    -DFEATURE_sql_db2=OFF \
+    -DFEATURE_sql_ibase=OFF \
+    -DFEATURE_sql_mysql=OFF \
+    -DFEATURE_sql_oci=OFF \
+    -DFEATURE_sql_odbc=OFF \
+    -DFEATURE_sql_psql=OFF \
+    -DFEATURE_testlib=$(if $(CONFIG_PACKAGE_libQt6Test),ON,OFF) \
+    -DFEATURE_itemmodeltester=OFF \
+    -DFEATURE_widgets=$(if $(CONFIG_PACKAGE_libQt6Widgets),ON,OFF) \
+    -DFEATURE_xml=$(if $(CONFIG_PACKAGE_libQt6Xml),ON,OFF) \
+    -DFEATURE_tuiotouch=$(if $(CONFIG_PACKAGE_qt6-plugin-libqtuiotouchplugin),ON,OFF)
 
 define Package/libQt6/Default/install
-  	$(INSTALL_DIR) $(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libQt6$(2).so* $(1)/usr/lib/
+    $(INSTALL_DIR) $(1)/usr/lib/
+    $(CP) $(PKG_INSTALL_DIR)/usr/lib/libQt6$(2).so* $(1)/usr/lib/
 endef
 
 # 1: short name
@@ -155,7 +159,7 @@ define DefineQt6Package
   endef
 
   define Package/libQt6$(1)/install
-	$(call Package/libQt6/Default/install,$$(1),$(1))
+    $(call Package/libQt6/Default/install,$$(1),$(1))
   endef
 endef
 
@@ -171,8 +175,8 @@ $(eval $(call DefineQt6Package,Widgets,Gui,))
 $(eval $(call DefineQt6Package,Xml,Core,))
 
 define Package/qt6-plugin/Default/install
-	$(INSTALL_DIR) $(1)/usr/lib/qt6plugins/$(2)/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/qt6plugins/$(2)/libq$(3).so $(1)/usr/lib/qt6plugins/$(2)/
+    $(INSTALL_DIR) $(1)/usr/lib/qt6plugins/$(2)/
+    $(CP) $(PKG_INSTALL_DIR)/usr/lib/qt6plugins/$(2)/libq$(3).so $(1)/usr/lib/qt6plugins/$(2)/
 endef
 
 # 1: plugin diretory
@@ -188,7 +192,7 @@ define DefineQt6PluginPackage
   endef
   
   define Package/qt6-plugin-libq$(2)/install
-	$(call Package/qt6-plugin/Default/install,$$(1),$(1),$(2))
+    $(call Package/qt6-plugin/Default/install,$$(1),$(1),$(2))
   endef
 endef
 
@@ -205,4 +209,30 @@ PKG_CONFIG_DEPENDS+=CONFIG_PACKAGE_qt6-plugin-libqtuiotouchplugin
 $(foreach lib,$(QT6BASE_LIBS),$(eval $(call BuildPackage,libQt6$(lib))))
 $(foreach lib,$(QT6_PLUGINS),$(eval $(call BuildPackage,qt6-plugin-libq$(lib))))
 $(eval $(call BuildPackage,libQt6))
+
+# 修正HostBuild规则，使用真实路径
+define Host/Prepare
+    $(call Host/Prepare/Default)
+    # 确保真实目录存在
+    mkdir -p $(REAL_HOST_BUILD_DIR)
+    # 复制源代码到真实目录
+    cp -r $(HOST_BUILD_DIR)/* $(REAL_HOST_BUILD_DIR)/
+endef
+
+define Host/Configure
+    # 使用真实路径执行CMake配置
+    cd $(REAL_HOST_BUILD_DIR); \
+    $(CMAKE_HOST) $(CMAKE_HOST_OPTIONS) .
+endef
+
+define Host/Compile
+    # 使用真实路径执行编译
+    $(MAKE) -C $(REAL_HOST_BUILD_DIR)
+endef
+
+define Host/Install
+    # 使用真实路径执行安装
+    $(MAKE) -C $(REAL_HOST_BUILD_DIR) install
+endef
+
 $(eval $(call HostBuild))
