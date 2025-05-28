@@ -14,7 +14,7 @@ PKG_SOURCE:=qttools-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/qt/qttools/tar.gz/v$(PKG_VERSION)?
 PKG_HASH:=b8f0bf5222130113f0b44755e25e04aa08f6007aa946a0cbf17e4603cd874e2a
 
-HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/qttools-$(PKG_VERSION)
+HOST_BUILD_DIR:=$(shell realpath $(BUILD_DIR_HOST))/qttools-$(PKG_VERSION)
 
 HOST_BUILD_DEPENDS:=qt6base/host
 HOST_BUILD_PARALLEL:=1
