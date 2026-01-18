@@ -14,8 +14,8 @@ PKG_SOURCE:=qtbase-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/qt/qtbase/tar.gz/v$(PKG_VERSION)?
 PKG_HASH:=0ef6db6b3e1074e03dcae7e689144af66fd51b95a6efe949d40281cc43e6fecf
 
-HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/qtbase-$(PKG_VERSION)
-PKG_BUILD_DIR:=$(BUILD_DIR)/qtbase-$(PKG_VERSION)
+HOST_BUILD_DIR:=$(shell realpath $(BUILD_DIR_HOST))/qtbase-$(PKG_VERSION)
+PKG_BUILD_DIR:=$(shell realpath $(BUILD_DIR))/qtbase-$(PKG_VERSION)
 
 PKG_BUILD_DEPENDS:=qt6base/host
 PKG_BUILD_PARALLEL:=1
